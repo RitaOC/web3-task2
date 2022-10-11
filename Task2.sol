@@ -1,22 +1,26 @@
-// SPDX-License-Identifier:<SPDX-License>
+// SPDX-License-Identifier:UNLINCENSED
 pragma solidity >= 0.7.0 < 0.9.0;
 contract wallet{
-  event log(address owner,uint balance);
+  address public owner;
+  uint public balance;
 
   constructor(){
-    owner = payable(msg.sender);
+   owner = payable(msg.sender) ;
   }
-  receive() external payable{}
+  receive() external payable{
+    balance += msg.value;
+  }
   
   modifier errorMessage(){
-    require(msg.sender == owner, "Not the Owner");
+    require (msg.sender == owner, "Not the Owner");
     _;
-    require(_amount <=balance,"Insufficient funds");
-    _;
+ 
   }
 
-  function withdraw (uint _amount)public{
+  function withdraw (uint _amount)external errorMessage{
+    require( _amount >= balance,"Insufficient funds");
     payable(msg.sender).transfer(_amount);
-    balance -= amount;
+    balance -= _amount;
   }
+  
 }
